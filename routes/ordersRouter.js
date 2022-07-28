@@ -1,96 +1,38 @@
 const express = require('express');
+const OrdersService = require('../service/ordersService');
+
 const router = express.Router();
 
+const services = new OrdersService();
+
 router.get('/', (req, res) => {
-  res.json([
-    {
-      orderId: 1,
-      products: [
-        {
-          name: 'prduct 1',
-        },
-        {
-          name: 'prduct 2',
-        },
-      ],
-      total: 100000,
-    },
-    {
-      orderId: 2,
-      products: [
-        {
-          name: 'prduct x',
-        },
-        {
-          name: 'prduct y',
-        },
-      ],
-      total: 5000,
-    },
-    {
-      orderId: 3,
-      products: [
-        {
-          name: 'prduct 1',
-        },
-      ],
-      total: 420,
-    },
-    {
-      orderId: 1,
-      products: [
-        {
-          name: 'prduct 7',
-        },
-        {
-          name: 'prduct 3',
-        },
-      ],
-      total: 6503,
-    },
-  ]);
+  const orders = services.findOrders();
+  res.json(orders);
 });
 
-router.get('/:orderId', (req, res) => {
-  const { orderId } = req.params;
-  res.json({
-    orderId,
-    products: [
-      {
-        name: 'prduct name',
-      },
-      {
-        name: 'prduct name',
-      },
-    ],
-    total: 'total pay',
-  });
+router.get('/:id', (req, res) => {
+  const { id } = req.params;
+  const order = services.findOneOrder(id);
+  res.json(order);
 });
 
 router.post('/', (req, res) => {
   const body = req.body;
-  res.json({
-    message: 'Generated order',
-    data: body,
-  });
+  const newOrder = services.createOrder(body);
+  res.json(newOrder);
 });
 
 router.patch('/:id', (req, res) => {
   const { id } = req.params;
-  const body = req.body;
-  res.json({
-    message: 'Modified order',
-    data: body,
-    id,
-  });
+  const data = req.body;
+  const orderUpdate = services.updateOrder(id, data);
+  res.json(orderUpdate);
 });
 
 router.delete('/:id', (req, res) => {
   const { id } = req.params;
-  res.json({
-    message: 'deleted order',
-    id,
-  });
+  const orderDeleted = services.deleteOrder(id);
+  res.json(orderDeleted);
 });
 
 module.exports = router;

@@ -1,41 +1,33 @@
 const express = require('express');
+const CategoriesService = require('../service/categoriesService');
+
 const router = express.Router();
 
+const service = new CategoriesService();
+
 router.get('/', (req, res) => {
-  res.json([
-    {
-      categoryId: 1,
-      name: 'clothing',
-    },
-    {
-      categoryId: 2,
-      name: 'electronic',
-    },
-    {
-      categoryId: 3,
-      name: 'movies',
-    },
-    {
-      categoryId: 4,
-      name: 'shoes',
-    },
-  ]);
+  const categories = service.findCategory();
+  res.json(categories);
 });
 
 router.get('/:categoryId', (req, res) => {
   const { categoryId } = req.params;
-  res.json({
-    categoryId,
-    name: 'category name',
-  });
+  const category = service.findOneCategory(categoryId);
+  res.json(category);
 });
 
-router.get('/:categoriesId/products/:productsId', (req, res) => {
-  const { categoriesId, productsId } = req.params;
-  res.json({
-    categoriesId,
-    productsId,
-  });
+router.post('/', (req, res) => {
+  const body = req.body;
+  const newCategory = service.createCategory(body);
+  res.json(newCategory);
 });
+
+// router.get('/:categoriesId/products/:productsId', (req, res) => {
+//   const { categoriesId, productsId } = req.params;
+//   res.json({
+//     categoriesId,
+//     productsId,
+//   });
+// });
 
 module.exports = router;
